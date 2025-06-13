@@ -183,21 +183,31 @@
       measurementId: "G-47E502BN3S"
     };
 
-    // Init Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const likesRef = db.ref("reactions/likes");
+    // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  const likesRef = db.ref("reactions/likes");
 
-    // Update count in real time
-    likesRef.on("value", (snapshot) => {
-      const count = snapshot.val() || 0;
-      document.getElementById("like-count").innerText = count;
-    });
+  // Load current count
+  likesRef.on("value", (snapshot) => {
+    const count = snapshot.val() || 0;
+    document.getElementById("like-count").innerText = count;
+  });
 
-    // Add a like on button click
-    function addLike() {
+  // Like toggle
+  function addLike() {
+    const liked = localStorage.getItem("hasLiked") === "true";
+
+    if (!liked) {
+      // First time like
       likesRef.transaction((current) => (current || 0) + 1);
+      localStorage.setItem("hasLiked", "true");
+    } else {
+      // Unlike
+      likesRef.transaction((current) => Math.max((current || 1) - 1, 0));
+      localStorage.setItem("hasLiked", "false");
     }
+  }
   </script>
 
 </body>
