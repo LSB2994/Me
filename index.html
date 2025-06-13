@@ -68,6 +68,17 @@
       margin-top: 2rem;
     }
 
+    .like-section {
+      text-align: center;
+      margin-top: 3rem;
+    }
+
+    .like-section button {
+      font-size: 1rem;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+    }
+
     footer {
       text-align: center;
       margin-top: 4rem;
@@ -120,9 +131,7 @@
       </div>
       <div class="timeline-item">
         <h3>TriBiz (4 months)</h3>
-        <p>Full-stack developer responsible for both the Android app and backend service. Integrated Kotlin-based UI with Firebase for auth and real-time sync. Implemented RESTful APIs for store operations.
-  </p>
-</p>
+        <p>Full-stack developer responsible for both the Android app and backend service. Integrated Kotlin-based UI with Firebase for auth and real-time sync. Implemented RESTful APIs for store operations.</p>
       </div>
     </div>
   </section>
@@ -148,9 +157,48 @@
     <p>Location: Phnom Penh, Cambodia</p>
   </section>
 
+  <section class="section like-section">
+    <h2>👍 Like this portfolio?</h2>
+    <button onclick="addLike()">Give a Like</button>
+    <p>Total Likes: <span id="like-count">0</span></p>
+  </section>
+
   <footer>
     &copy; 2025 Leng Sambath. All rights reserved.
   </footer>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAqwHLqQ1mZ-c0t_nbrBALcYhR_i7qJRGg",
+      authDomain: "portfolio-9d30e.firebaseapp.com",
+      databaseURL: "https://portfolio-9d30e-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "portfolio-9d30e",
+      storageBucket: "portfolio-9d30e.firebasestorage.app",
+      messagingSenderId: "989458898154",
+      appId: "1:989458898154:web:01a44f8249f16d7b708b93",
+      measurementId: "G-47E502BN3S"
+    };
+
+    // Init Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const likesRef = db.ref("reactions/likes");
+
+    // Update count in real time
+    likesRef.on("value", (snapshot) => {
+      const count = snapshot.val() || 0;
+      document.getElementById("like-count").innerText = count;
+    });
+
+    // Add a like on button click
+    function addLike() {
+      likesRef.transaction((current) => (current || 0) + 1);
+    }
+  </script>
 
 </body>
 </html>
